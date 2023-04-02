@@ -1,0 +1,4 @@
+**/*.Identifier
+**/__pycache__
+run/flask/node_modules
+package-lock.json

@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Flask MakeITWork Project 1 Tryout{% endblock %}
+
+{% block js %}
+<script>
+    // function to get new prediction using AJAX call to flask backend
+    function getNewPrediction(param){
+        // make ajax call
+        var req = new XMLHttpRequest()
+        // logic to handle response of ajax call
+        req.onreadystatechange = function()
+        {
+            // check if request state is DONE (readyState == 4)
+            if (req.readyState == 4)
+            {
+                // check if request is succesfull
+                if (req.status != 200)
+                {
+                    console.log("Oops something went wrong here...!");
+                }
+                else
+                {
+                    // parse response to JSON
+                    var response = JSON.parse(req.responseText)
+                    // get initial prediction value
+                    var initialPrediction = document.getElementById('initalPredictionValue').innerHTML;
+                    // calculate difference between new prediction and init prediction
+                    var differencePrediction = (response['prediction'] - initialPrediction).toFixed(1);
+                    // change difference prediction to String
+                    var differencePredictionString = String(differencePrediction);
+                    // if difference is positive add a plus in front of the string
+                    if(differencePrediction > 0) {
+                        differencePredictionString = '+'+differencePredictionString;
+                    };
+                    // print the new prediction including the difference
+                    document.getElementById('newPredictionValue').innerHTML = response['prediction'] + ' (' + differencePredictionString + ')';
+                    // add animation class to initial prediction to have it shift up and change its opacity
+                    document.getElementById('initialPrediction').classList.add('animation-initial-prediction');
+                    // make the new prediction visible
+                    document.getElementById('newPrediction').classList.remove('hidden');
+                    // add animation class to new prediction to have it shift up and gradually increase its opacity
+                    document.getElementById('newPrediction').classList.add('animation-new-prediction');
+                    // report the change of the parameter with the slider on the page
+                    document.querySelector("#"+param.name+"Change > .oldParam").innerHTML = response['old_param'];
+                    document.querySelector("#"+param.name+"Change > .newParam").innerHTML = response['new_param'];
+                    // calculate difference between new value and initial value
+                    var difference = (response['new_param'] - response['old_param']).toFixed(1);
+                    // turn it into a string
+                    var differenceString = String(difference);
+                    // if value is positive, add a '+' in front of it
+                    if(difference > 0) {
+                        differenceString = '+'+differenceString;
+                    };
+                    // add the difference to the page
+                    document.querySelector("#"+param.name+"Change > .difference").innerHTML = differenceString;
+                    // make the item visible on the page
+                    document.getElementById(param.name+'Change').classList.remove('hidden');
+                    // change the order of the item so it appears at the top of the section highlighting the changes
+                    var content = document.getElementById(param.name+'Change');
+                    var parent = content.parentNode;
+                    parent.insertBefore(content, parent.firstChild);
+                    // add animation to show the user a change was made
+                    document.getElementById(param.name+'Change').classList.add('animate-pulse');
+                }
+            }
+        }
+        // make the ajax call
+        req.open('POST', '/ajax_prediction')
+        // set correct headers for the ajax call
+        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+        // add parameters as attributes to the URL
+        var parameter_name = param.name
+        var parameter_value = param.value
+        var postVars = 'parameter_name='+parameter_name+'&parameter_value='+parameter_value
+        // make a request to the backend
+        req.send(postVars)
+        
+        return false
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="bg-gray-50">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> <!-- md:h-screen -->
+        <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900">
+            <img class="w-12 h-12 mr-2" src="{{ url_for('static', filename='img/logo.png') }}" alt="logo">
+            Project 1 - Gezondheidszorg
+        </a>
+        <div class="w-full bg-white rounded-lg shadow md:mt-0 xl:p-0">
+            <div class="flex flex-row divide-x my-4">
+                <div class="container basis-1/2">
+                    <p class="ml-5 text-lg font-bold">Fixed data:</p>
+                    <div class="flex flex-col">
+                        <p class="px-10">Genetic: {{ params['genetic']}}</p>
+                        <p class="px-10">Length: {{ params['length']}}</p>
+                    </div>
+                    <div class="flex flex-col ml-5 mt-4">
+                        <p class="text-lg font-bold">Variable data:</p>
+                        <div class="container p-1"  x-data="{ mass: {{params['mass']}} }">
+                            <label class="block mb-2 text-sm font-medium text-gray-900" for="mass" x-text="`Weight [kg]: ` + mass">Mass: 80</label>
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-2/3 p-2.5" id="mass" max="180" min="50" name="mass" required="" step="0.1" type="range" value="{{params['mass']}}" x-model="mass" onchange="getNewPrediction(this)">
+                        </div>
+                        <div class="container p-1"  x-data="{ exercise: {{params['exercise']}} }">
+                            <label class="block mb-2 text-sm font-medium text-gray-900" for="exercise" x-text="`Exercise [hr/day]: ` + exercise">Exercise: 80</label>
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-2/3 p-2.5" id="exercise" max="6" min="0" name="exercise" required="" step="0.1" type="range" value="{{params['exercise']}}" x-model="exercise" onchange="getNewPrediction(this)">
+                        </div>
+                        <div class="container p-1"  x-data="{ alcohol: {{params['alcohol']}} }">
+                            <label class="block mb-2 text-sm font-medium text-gray-900" for="alcohol" x-text="`Alcohol [glasses/day]: ` + alcohol">Alcohol: 80</label>
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-2/3 p-2.5" id="alcohol" max="8" min="0" name="alcohol" required="" step="1" type="range" value="{{params['alcohol']}}" x-model="alcohol" onchange="getNewPrediction(this)">
+                        </div>
+                        <div class="container p-1"  x-data="{ smoking: {{params['smoking']}} }">
+                            <label class="block mb-2 text-sm font-medium text-gray-900" for="smoking" x-text="`Smoking [cig./day]: ` + smoking">Smoking: 80</label>
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-2/3 p-2.5" id="smoking" max="25" min="0" name="smoking" required="" step="1" type="range" value="{{params['smoking']}}" x-model="smoking" onchange="getNewPrediction(this)">
+                        </div>
+                        <div class="container p-1"  x-data="{ sugar: {{params['sugar']}} }">
+                            <label class="block mb-2 text-sm font-medium text-gray-900" for="sugar" x-text="`Sugar [cubes/day]: ` + sugar">Sugar: 80</label>
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-2/3 p-2.5" id="sugar" max="15" min="0" name="sugar" required="" step="0.1" type="range" value="{{params['sugar']}}" x-model="sugar" onchange="getNewPrediction(this)">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col  basis-1/2 pt-5 pl-5 relative">
+                    <h1 id="initialPrediction" class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+                        Lifespan prediction: <span id="initalPredictionValue">{{prediction[0] | round(1)}}</span>
+                    </h1>
+                    <h1 id="newPrediction" class="hidden text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+                        New lifespan prediction: <span id="newPredictionValue">{{prediction[0] | round(1)}}</span> 
+                    </h1>
+                    <div class="container mt-10">
+                        <p id="massChange" class="text-md hidden"><span class="font-bold">Weight:</span> <span class="oldParam">{{session['params'].get('mass') }}</span> <span class="text-xl font-bold">&#8594</span> <span class="newParam">{{session['new_params'].get('mass')}}</span> (<span class="difference">{{(session['new_params'].get('mass') - session['params'].get('mass')) | round(1)}}</span>)</p>
+                        <p id="exerciseChange" class="text-md hidden"><span class="font-bold">Exercise:</span> <span class="oldParam">{{session['params'].get('exercise') }}</span> <span class="text-xl font-bold">&#8594</span> <span class="newParam">{{session['new_params'].get('exercise')}}</span> (<span class="difference">{{(session['new_params'].get('exercise') - session['params'].get('exercise')) | round(1)}}</span>)</p>
+                        <p id="alcoholChange" class="text-md hidden"><span class="font-bold">Alcohol:</span> <span class="oldParam">{{session['params'].get('alcohol') }}</span> <span class="text-xl font-bold">&#8594</span> <span class="newParam">{{session['new_params'].get('alcohol')}}</span> (<span class="difference">{{(session['new_params'].get('alcohol') - session['params'].get('alcohol')) | round(1)}}</span>)</p>
+                        <p id="smokingChange" class="text-md hidden"><span class="font-bold">Smoking:</span> <span class="oldParam">{{session['params'].get('smoking') }}</span> <span class="text-xl font-bold">&#8594</span> <span class="newParam">{{session['new_params'].get('smoking')}}</span> (<span class="difference">{{(session['new_params'].get('smoking') - session['params'].get('smoking')) | round(1)}}</span>)</p>
+                        <p id="sugarChange" class="text-md hidden"><span class="font-bold">Sugar:</span> <span class="oldParam">{{session['params'].get('sugar') }}</span> <span class="text-xl font-bold">&#8594</span> <span class="newParam">{{session['new_params'].get('sugar')}}</span> (<span class="difference">{{(session['new_params'].get('sugar') - session['params'].get('sugar')) | round(1)}}</span>)</p>
+                    </div>
+                    <div class="absolute bottom-0 right-0 mr-5">
+                        <a href="{{url_for('index')}}"" type="button" class="w-full text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Go Back</a>
+                    </div>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+  </section>
+{% endblock %}

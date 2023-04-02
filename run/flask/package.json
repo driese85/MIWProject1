@@ -1,0 +1,13 @@
+{
+  "name": "miw_tryout_proj11",
+  "scripts": {
+    "tw-build": "npx tailwindcss -i ./static/css/src/input.css -o ./static/css/dist/output.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "tailwindcss": "^3.2.6"
+  },
+  "dependencies": {
+    "flowbite": "^1.6.3"
+  }
+}

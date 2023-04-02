@@ -1,0 +1,51 @@
+### git log --all --oneline > git_history.txt ###
+a08790b Changed input to int for smoking and alcohol
+aa20001 Changed input to integer for smoking and alcohol
+006c5f0 Changed debugging to INFO level
+28b2776 Edited README.md
+2ed227d Edited git_history.txt
+af7b5fa Edited README.md
+cc62e90 Fixed conda and pip requirements
+5793b84 build: fixed data paths
+61e9627 Edited README.md
+e11afae Git history and requirements.txt for pip and conda
+6a1288c restructuring run folder
+3b146ca Flask app: added comments
+bf00660 Edited cli prompt type and implemented logging
+66bf715 Flask app: UI fixes
+00cdcf3 Edited flask app usability
+ceaa2b6 cli-app: easthetic fixes
+09fbb87 Refactored cli-app based on example from Jeroen
+1ec0858 Added input logic to cli-app
+055206f flask app: change wording from pipe to model
+6824d5b Created CLI app
+85b7cc1 Edited predict page
+4da0efe Created regression script
+48752fe Added logging to etl.py
+966fa38 Added further markdown
+b327c40 Interface: added prediction page
+412ceb4 Regression: added decision tree and random forest
+42eb94b Setup flask with tailwind. Created index page.
+d5e1c4c Edited .gitignore
+639e594 Regression: pickled model
+2456d08 Edited .gitignore
+ddf8f7a EDA Markdown changes
+985c029 Etl save data fix
+f2c15ff Added ETL python script
+bf08725 Updated regression with new data
+c9457dc Updated requirements.txt
+a78ff72 Updated README.md
+0418c1e EDA: added markdown to one file
+2cb45cf Regression: added powerset of transformed features
+83b29dc EDA finalized
+b667363 Added StandardScaler and retrieved coef_ of model
+9432326 Started linear regression modeling
+05f5da7 Fixed missing lifespan in saved datasets
+3246837 EDA: saved different datasets for modeling
+515d4ca Finalized normalization of data exercise
+319b3d5 Edited notebook to check for normality of data
+47db533 Created EDA notebook
+5beecd3 Retrieved data from rest_server
+8cf54ae Generated conda requirements.txt file
+719c201 Edited .gitignore
+354b284 Initial commit

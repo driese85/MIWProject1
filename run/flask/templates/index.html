@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}Flask MakeITWork Project 1 Tryout{% endblock %}
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // find toggle checkbox
+    var checkbox = document.querySelector('input[type="checkbox"]');
+    // on toggle change sliders to number input
+    checkbox.addEventListener('change', function () {
+        if (checkbox.checked) {
+            // if checked: change form from range to manual input fields for preciser control over input values
+            console.log('Checked');
+            // find all input fields
+            const formFields = document.querySelectorAll('input[type="range"]');
+            // loop over input fields and change type of field to "input"
+            formFields.forEach((field) => {
+                field.type = 'number';
+                
+            });
+            // find all labels in the form
+            const labels = document.querySelectorAll('form label');
+            // Change label innerHTML to label without numeric value
+            labels.forEach((label) => {
+                switch(label.htmlFor) {
+                    case 'genetic':
+                        label.innerHTML = "Genetic age [yr]: ";
+                        break;
+                    case 'length':
+                        label.innerHTML = "Length [cm]: ";
+                        break;
+                    case 'mass':
+                        label.innerHTML = "Weight [kg]: ";
+                        break;
+                    case 'exercise':
+                        label.innerHTML = "Exercise [hr/day]: ";
+                        break;
+                    case 'alcohol':
+                        label.innerHTML = "Alcohol [glasses/day]: ";
+                        break;
+                    case 'smoking':
+                        label.innerHTML = "Smoking [cig./day]: ";
+                        break;
+                    case 'sugar':
+                        label.innerHTML = "Sugar [cubes/day]: ";
+                        break;    
+                }
+            });
+        } else {
+            // if not checked: change form from manual input to range sliders
+            console.log('Not checked');
+            // find all input fields
+            const formFields = document.querySelectorAll('input[type="number"]');
+            // loop over input fields and change type of field to "range"
+            formFields.forEach((field) => {
+                field.type = 'range';
+            });
+            // find all labels in the form
+            const labels = document.querySelectorAll('form label');
+            // Change label innerHTML to label with numeric value
+            labels.forEach((label) => {
+                switch(label.htmlFor) {
+                    case 'genetic':
+                        label.innerHTML = "Genetic age [yr]: " + label.parentNode.querySelector('input').value;;
+                        break;
+                    case 'length':
+                        label.innerHTML = "Length [cm]: " + label.parentNode.querySelector('input').value;;
+                        break;
+                    case 'mass':
+                        label.innerHTML = "Weight [kg]: " + label.parentNode.querySelector('input').value;;
+                        break;
+                    case 'exercise':
+                        label.innerHTML = "Exercise [hr/day]: " + label.parentNode.querySelector('input').value;;
+                        break;
+                    case 'alcohol':
+                        label.innerHTML = "Alcohol [glasses/day]: " + label.parentNode.querySelector('input').value;;
+                        break;
+                    case 'smoking':
+                        label.innerHTML = "Smoking [cig./day]: " + label.parentNode.querySelector('input').value;;
+                        break;
+                    case 'sugar':
+                        label.innerHTML = "Sugar [cubes/day]: " + label.parentNode.querySelector('input').value;;
+                        break;    
+                }
+            });
+        }
+    });
+    });
+    
+</script>
+{% endblock %}
+{% block content %}
+<section class="bg-gray-50">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> <!-- md:h-screen -->
+        <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900">
+            <img class="w-12 h-12 mr-2" src="{{ url_for('static', filename='img/logo.png') }}" alt="logo">
+            Project 1 - Gezondheidszorg
+        </a>
+        <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <div class="flex items-center relative">
+                    
+                        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+                            Enter parameters
+                        </h1>
+                        <!-- Toggle -->
+                        <div class="absolute top-2 right-0">
+                            <label id="toggle" class="relative inline-flex items-center cursor-pointer">
+                                <input @click="$el.replaceWith($el.cloneNode(true))" id="toggle_input" type="checkbox" value="" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 dark:peer-focus:ring-violet-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-violet-600"></div>
+                                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Manual input</span>
+                            </label>
+                        </div>
+                        <!-- End Toggle -->
+                </div>
+                <!-- Form to input parameters to make lifespan prediction  -->
+                <form class="space-y-4 md:space-y-6" method="POST" action="/">
+                    {{ form.csrf_token }}
+                    <div class="grid gap-4 grid-cols-1 grid-rows-7 md:grid-cols-2 md:grid-rows-4">
+                        <div x-data="{ genetic: 80 }">
+                            {{ form.genetic.label(form.genetic.label.text.title(), class_="block mb-2 text-sm font-medium text-gray-900", **{'x-text': '`Genetic age [yr]: ` + genetic'}) }} {{ form.genetic(min=60, max=110, step=0.1, class_="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5", **{'x-model': 'genetic'}) }}
+                        </div>
+                        <div x-data="{ length: 180 }">
+                            {{ form.length.label(form.length.label.text.title(), class_="block mb-2 text-sm font-medium text-gray-900", **{'x-text': '`Length [cm]: ` + length'}) }} {{ form.length(min=150, max=215, step=1, class_="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5", **{'x-model': 'length'}) }}
+                        </div>
+                        <div x-data="{ mass: 80 }">
+                            {{ form.mass.label(form.mass.label.text.title(), class_="block mb-2 text-sm font-medium text-gray-900", **{'x-text': '`Weight [kg]: ` + mass'}) }} {{ form.mass(min=50, max=165, step=0.1, class_="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5", **{'x-model': 'mass'}) }}
+                        </div>
+                        <div x-data="{ exercise: 2 }">
+                            {{ form.exercise.label(form.exercise.label.text.title(), class_="block mb-2 text-sm font-medium text-gray-900", **{'x-text': '`Exercise [hr/day]: ` + exercise'}) }} {{ form.exercise(min=0, max=8, step=0.1, class_="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5", **{'x-model': 'exercise'}) }}
+                        </div>
+                        <div x-data="{ smoking: 0 }">
+                            {{ form.smoking.label(form.smoking.label.text.title(), class_="block mb-2 text-sm font-medium text-gray-900", **{'x-text': '`Smoking [cig./day]: ` + smoking'}) }} {{ form.smoking(min=0, max=25, step=1, class_="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5", **{'x-model': 'smoking'}) }}
+                        </div>
+                        <div x-data="{ alcohol: 0 }">
+                            {{ form.alcohol.label(form.alcohol.label.text.title(), class_="block mb-2 text-sm font-medium text-gray-900", **{'x-text': '`Alcohol [glasses/day]: ` + alcohol'}) }} {{ form.alcohol(min=0, max=10, step=1, class_="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5", **{'x-model': 'alcohol'}) }}
+                        </div>
+                        <div x-data="{ sugar: 4 }">
+                            {{ form.sugar.label(form.sugar.label.text.title(), class_="block mb-2 text-sm font-medium text-gray-900", **{'x-text': '`Sugar [cubes/day]: ` + sugar'}) }} {{ form.sugar(min=0, max=15, step=0.1, class_="bg-gray-50 border border-gray-300 text-gray-900 accent-violet-600 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5", **{'x-model': 'sugar'}) }}
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Predict lifespan</button>
+                    <p class="text-sm font-light text-gray-500 text-center">
+                        Hogeschool Rotterdam - MakeITWork - Applied Artificial Intelligence - Cohort 2
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+  </section>
+{% endblock %}
