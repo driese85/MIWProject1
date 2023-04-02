@@ -60,4 +60,6 @@ pip install -r pip_requirements.txt
 
 cd run/flask && flask run
 ```
+![Flask app screenshot 1](https://github.com/driese85/MIWProject1/blob/master/run/screenshots/prediciton_form.png)
+![Flask app screenshot 2](https://github.com/driese85/MIWProject1/blob/master/run/screenshots/prediction_result.png)
 
